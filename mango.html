@@ -10,17 +10,12 @@
     <link rel="stylesheet" href="site.css">
 </head>
 <body>
-    <!-- Element to display the random number -->
-    <p id="mangoText">Your mango is a tasty mango.</p>
 
-    <!-- Element to display the selected mango information -->
     <div id="mangoInfo"></div>
 
-    <!-- Back button to navigate to the original page -->
     <button id="backButton">Back to Home</button>
 
     <script>
-        // Copy-paste the HTML table directly from the Wikipedia page into this string
         const tableHTML = `<table class="wikitable sortable static-row-numbers static-row-header-text col2center hover-highlight jquery-tablesorter">
 <thead><tr>
 <th class="unsortable">Common<br>name(s)
@@ -1282,7 +1277,6 @@ If <a href="/wiki/Dasheri" title="Dasheri">Dussehri</a> of Lucknow is the queen,
 <td>Zill is a seedling of Haden planted in 1922 by Carl King of Lake Worth, Florida (US). Vigorous tree, fruit is good eating quality.
 </td></tr></tbody><tfoot></tfoot></table>`;
 
-        // Parse the table HTML and convert it into an array of objects
         const parser = new DOMParser();
         const doc = parser.parseFromString(tableHTML, 'text/html');
         const table = doc.querySelector('table');
@@ -1291,13 +1285,12 @@ If <a href="/wiki/Dasheri" title="Dasheri">Dussehri</a> of Lucknow is the queen,
             const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
             const rows = Array.from(table.querySelectorAll('tbody tr'));
             
-            const firstRowData = {};  // Object to store the first row's data as default values
+            const firstRowData = {};
 
-            // Extract the first row data to use as defaults
             const firstRow = rows[0];
             const firstRowCells = Array.from(firstRow.querySelectorAll('td'));
             firstRowCells.forEach((cell, i) => {
-                if (i === 1) { // Image column special handling
+                if (i === 1) {
                     const img = cell.querySelector('img');
                     firstRowData[headers[i]] = img ? img.src : null;
                 } else {
@@ -1306,25 +1299,23 @@ If <a href="/wiki/Dasheri" title="Dasheri">Dussehri</a> of Lucknow is the queen,
                 }
             });
 
-            // Process all rows and apply default values from the first row if necessary
             return rows.map(row => {
                 const cells = Array.from(row.querySelectorAll('td'));
                 const rowData = {};
                 cells.forEach((cell, i) => {
-                    if (i === 1) { // Image column special handling
+                    if (i === 1) {
                         const img = cell.querySelector('img');
                         rowData[headers[i]] = img ? img.src : firstRowData[headers[i]];
                     } else {
                         const link = cell.querySelector('a');
                         const cellText = link ? link.textContent.trim() : cell.textContent.trim();
-                        rowData[headers[i]] = cellText || firstRowData[headers[i]];  // Use first row value if empty
+                        rowData[headers[i]] = cellText || firstRowData[headers[i]];
                     }
                 });
                 return rowData;
             });
         }
 
-// Convert the table to an array of objects
 const mangoData = tableToArray(table);
 
 function generateRandomNumber() {
@@ -1343,7 +1334,6 @@ function displayMangoInfo(mango) {
 
 document.addEventListener("DOMContentLoaded", function() {
     var randomNumber = generateRandomNumber();
-    // document.getElementById('mangoText').textContent = 'Your mango score: ' + randomNumber;
 
     const selectedMango = mangoData[randomNumber];
     displayMangoInfo(selectedMango);

@@ -3,6 +3,11 @@
     font-family: Playfair;
 }
 
+html, body {
+    height: 100%; /* Ensure the body takes the full height of the viewport */
+    margin: 0; /* Remove any default margin */
+}
+
 body {
     background-color: #222;
     color: #f0e6d6;
@@ -10,6 +15,9 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    height: 100%; /* Ensure the body takes the full height */
+    text-align: center; /* Center-align all text within the body */
+    margin: 0; /* Remove default margin */
 }
 
 h3 {
@@ -17,6 +25,7 @@ h3 {
     font-size: 60px;
     font-weight: 700;
     color: #f3c68e;
+    margin: 20px 0; /* Add some margin for spacing */
 }
 
 h4 {
@@ -29,7 +38,17 @@ h4 {
 img {
     max-width: 500px;
     height: auto;
+    display: block; /* Ensure the image is a block element */
+    margin: 20px auto; /* Center the image and add some vertical spacing */
 }
+
+p {
+    max-width: 600px; /* Set a maximum width for paragraphs */
+    margin: 20px auto; /* Center the paragraph and add vertical spacing */
+    line-height: 1.6; /* Improve readability with line height */
+}
+
+
 
 button {
     background-color: #f3c68e;

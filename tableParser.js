@@ -1,27 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MangoDB</title>
-    <link rel="icon" type="image/x-icon" href="mango.png">
-    <link rel="stylesheet" href="reset.css">
-    <link rel="stylesheet" href="site.css">
-</head>
-<body>
-    <!-- Element to display the random number -->
-    <p id="mangoText">Your mango is a tasty mango.</p>
-
-    <!-- Element to display the selected mango information -->
-    <div id="mangoInfo"></div>
-
-    <!-- Back button to navigate to the original page -->
-    <button id="backButton">Back to Home</button>
-
-    <script>
-        // Copy-paste the HTML table directly from the Wikipedia page into this string
-        const tableHTML = `<table class="wikitable sortable static-row-numbers static-row-header-text col2center hover-highlight jquery-tablesorter">
+const tableHTML = `
+<table class="wikitable sortable static-row-numbers static-row-header-text col2center hover-highlight jquery-tablesorter">
 <thead><tr>
 <th class="unsortable">Common<br>name(s)
 </th>
@@ -1280,79 +1258,33 @@ If <a href="/wiki/Dasheri" title="Dasheri">Dussehri</a> of Lucknow is the queen,
 <td>South Africa, United States
 </td>
 <td>Zill is a seedling of Haden planted in 1922 by Carl King of Lake Worth, Florida (US). Vigorous tree, fruit is good eating quality.
-</td></tr></tbody><tfoot></tfoot></table>`;
+</td></tr></tbody><tfoot></tfoot></table>
+`;
 
-        // Parse the table HTML and convert it into an array of objects
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(tableHTML, 'text/html');
-        const table = doc.querySelector('table');
+// Convert the table HTML string into a DOM element
+const parser = new DOMParser();
+const doc = parser.parseFromString(tableHTML, 'text/html');
+const table = doc.querySelector('table');
 
-        function tableToArray(table) {
-            const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
-            const rows = Array.from(table.querySelectorAll('tbody tr'));
-            
-            const firstRowData = {};  // Object to store the first row's data as default values
-
-            // Extract the first row data to use as defaults
-            const firstRow = rows[0];
-            const firstRowCells = Array.from(firstRow.querySelectorAll('td'));
-            firstRowCells.forEach((cell, i) => {
-                if (i === 1) { // Image column special handling
-                    const img = cell.querySelector('img');
-                    firstRowData[headers[i]] = img ? img.src : null;
-                } else {
-                    const link = cell.querySelector('a');
-                    firstRowData[headers[i]] = link ? link.textContent.trim() : cell.textContent.trim();
-                }
-            });
-
-            // Process all rows and apply default values from the first row if necessary
-            return rows.map(row => {
-                const cells = Array.from(row.querySelectorAll('td'));
-                const rowData = {};
-                cells.forEach((cell, i) => {
-                    if (i === 1) { // Image column special handling
-                        const img = cell.querySelector('img');
-                        rowData[headers[i]] = img ? img.src : firstRowData[headers[i]];
-                    } else {
-                        const link = cell.querySelector('a');
-                        const cellText = link ? link.textContent.trim() : cell.textContent.trim();
-                        rowData[headers[i]] = cellText || firstRowData[headers[i]];  // Use first row value if empty
-                    }
-                });
-                return rowData;
-            });
-        }
+// Function to convert the table to an array of objects
+function tableToArray(table) {
+    const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+    const rows = Array.from(table.querySelectorAll('tbody tr'));
+    
+    return rows.map(row => {
+        const cells = Array.from(row.querySelectorAll('td'));
+        const rowData = {};
+        cells.forEach((cell, i) => {
+            if (i === 1) { // Special handling for the image column
+                const img = cell.querySelector('img');
+                rowData[headers[i]] = img ? img.src : null;
+            } else {
+                rowData[headers[i]] = cell.textContent.trim();
+            }
+        });
+        return rowData;
+    });
+}
 
 // Convert the table to an array of objects
-const mangoData = tableToArray(table);
-
-function generateRandomNumber() {
-    return Math.floor(Math.random() * mangoData.length);
-}
-
-function displayMangoInfo(mango) {
-    const mangoInfoDiv = document.getElementById('mangoInfo');
-    mangoInfoDiv.innerHTML = `
-        <h3>${mango["Commonname(s)"]}</h3>
-        ${mango.Image ? `<img src="${mango.Image}" alt="${mango["Common name(s)"]}">` : ''}
-        <p><strong>Origin/Region:</strong> ${mango["Origin/region"]}</p>
-        <p><strong>Notes:</strong> ${mango.Notes}</p>
-    `;
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-    var randomNumber = generateRandomNumber();
-    // document.getElementById('mangoText').textContent = 'Your mango score: ' + randomNumber;
-
-    const selectedMango = mangoData[randomNumber];
-    displayMangoInfo(selectedMango);
-
-    document.getElementById('backButton').addEventListener('click', function() {
-        window.location.href = 'index.html';
-    });
-});
-
-    </script>
-</body>
-</html>
+const tableData = tableToArray(table);
